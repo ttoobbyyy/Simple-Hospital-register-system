@@ -22,8 +22,8 @@ public class Main extends Application {
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("ui/Login.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setTitle("挂号信息管理系统");
+        primaryStage.setScene(new Scene(root, 500, 300));
         primaryStage.show();
     }
 
