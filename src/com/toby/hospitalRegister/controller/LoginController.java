@@ -13,7 +13,6 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
