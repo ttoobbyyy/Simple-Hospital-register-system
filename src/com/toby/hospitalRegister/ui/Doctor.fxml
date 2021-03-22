@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="451.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.toby.hospitalRegister.controller.DoctorController">
+   <children>
+      <Label fx:id="labelWelcome" layoutX="14.0" layoutY="3.0" prefHeight="23.0" prefWidth="130.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="pickerDateStart" layoutX="8.0" layoutY="425.0" prefHeight="23.0" prefWidth="175.0" promptText="开始时间" />
+      <DatePicker fx:id="pickerDateEnd" layoutX="183.0" layoutY="425.0" prefHeight="23.0" prefWidth="175.0" promptText="结束时间" />
+      <CheckBox fx:id="checkBoxAllTime" layoutX="372.0" layoutY="428.0" mnemonicParsing="false" onAction="#checkBoxAllTimeSelected" text="全部时间" />
+      <CheckBox fx:id="checkBoxToday" layoutX="451.0" layoutY="428.0" mnemonicParsing="false" onAction="#checkBoxTodaySelected" text="今天" />
+      <Button fx:id="buttonFilter" layoutX="512.0" layoutY="424.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="82.0" text="过滤/更新" />
+      <Button fx:id="buttonExit" layoutX="613.0" layoutY="424.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="58.0" text="退出" />
+      <TabPane fx:id="mainPane" layoutX="8.0" layoutY="25.0" prefHeight="389.0" prefWidth="670.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab fx:id="tabRegister" text="挂号列表">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TreeTableView fx:id="tableRegister" prefHeight="361.0" prefWidth="670.0">
+                          <columns>
+                            <TreeTableColumn fx:id="columnRegisterNumber" prefWidth="121.5999813079834" text="挂号编号" />
+                            <TreeTableColumn fx:id="columnRegisterPatientName" prefWidth="149.60003662109375" text="病人名称" />
+                              <TreeTableColumn fx:id="columnRegisterDateTime" prefWidth="234.39999389648438" text="挂号日期时间" />
+                              <TreeTableColumn fx:id="columnRegisterType" prefWidth="164.800048828125" text="号种类别" />
+                          </columns>
+                        </TreeTableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="tabIncome" text="收入列表">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="170.0" prefWidth="276.0">
+                     <children>
+                        <TreeTableView fx:id="tableIncome" prefHeight="359.0" prefWidth="670.0">
+                          <columns>
+                            <TreeTableColumn fx:id="columnIncomeDepartmentName" prefWidth="107.99996757507324" text="科室名称" />
+                            <TreeTableColumn fx:id="columnIncomeDoctorNumber" prefWidth="82.4000015258789" text="医生编号" />
+                              <TreeTableColumn fx:id="columnIncomeDoctorName" prefWidth="135.199951171875" text="医生名称" />
+                              <TreeTableColumn fx:id="columnIncomeRegisterType" prefWidth="118.39996337890625" text="号种类别" />
+                              <TreeTableColumn fx:id="columnIncomeRegisterPopulation" prefWidth="115.20004272460938" text="挂号人次" />
+                              <TreeTableColumn fx:id="columnIncomeSum" prefWidth="113.60003662109375" text="收入合计" />
+                          </columns>
+                        </TreeTableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

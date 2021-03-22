@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -28,7 +29,11 @@ public class LoginController {
     void initialize(){
         buttonLoginDoctor.setOnKeyReleased(keyEvent -> {
             if(keyEvent.getCode() == KeyCode.ENTER){
-                doctorLogin();
+                try {
+                    doctorLogin();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         });
         buttonLoginPatient.setOnKeyReleased(keyEvent ->{
@@ -105,7 +110,46 @@ public class LoginController {
     }
 
     @FXML
-    public void doctorLogin() {
+    public void doctorLogin() throws SQLException {
+        if(!validateUsernameAndPassword())
+            return;
+        ResultSet resultSet =  DBConnector.getInstance().getDoctorInfoById(inputUsername.getText().trim());
+        if(resultSet == null){
+            labelStatus.setText("数据库读取错误，请联系系统管理员！");
+            labelStatus.setStyle("-fx-text-fill: red");
+        }
+        try {
+            if(!resultSet.next()){
+                labelStatus.setText("用户不存在");
+                labelStatus.setStyle("-fx-text-fill: red");
+                return;
+            }else if(!resultSet.getString(Constants.NameTableColumnDoctorPassword).equals(inputPassword.getText().trim()))
+            {
+                labelStatus.setText("密码输入错误！");
+                labelStatus.setStyle("-fx-text-fill: red");
+                return;
+            }
+
+            DoctorController.doctorName = resultSet.getString(Constants.NameTableColumnDoctorName);
+            DoctorController.doctorNumber = resultSet.getString(Constants.NameTableColumnDoctorNumber);
+
+            //更新登录时间
+            DBConnector.getInstance().updateDoctorLoginTime(inputUsername.getText().trim(),
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            //获取当前的窗口，执行关闭，然后开启新的窗口
+            Stage primaryStage = (Stage) buttonLoginPatient.getScene().getWindow();
+            primaryStage.close();
+
+            Stage newStage = new Stage();
+            Scene newScene = new Scene(FXMLLoader.load(getClass().getResource("../ui/Doctor.fxml")));
+            newStage.setTitle("医生界面");
+            newStage.setScene(newScene);
+            newStage.show();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
