@@ -22,3 +22,11 @@
 --module-path D:\computer\java\javafx-sdk-11.0.2\lib //这是lib的位置，lib的问题需要自行解决
 --add-modules javafx.controls,javafx.fxml,com.jfoenix
 ```
+
+病人逻辑图
+
+![image-20210322083002958](../../Simple-Hospital-register-system/image/image-20210322083002958.png)
+
+为了保证挂号的编号是单调且递增的，故需要设置数据库的隔离级别是repeatable（可重复读）
+
+复选框过滤方法：为每一个下拉框定义一个原始列表与一个当前列表，原始列表用于存放此下拉框在没有其它限制的情况下所有的可选值，而当前列表用于存放经过过滤后下拉框的候选值。进行更改操作时，根据当前更新的值，对其他复选框的当前列表进行更新！时间复杂度并不高

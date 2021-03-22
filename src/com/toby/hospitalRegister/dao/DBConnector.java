@@ -130,7 +130,6 @@ public class DBConnector {
                 regId = Integer.parseInt(resultSet.getString(Constants.NameTableColumnRegisterNumber))+1;
             }
 
-            //不理解,我觉得下面的代码是无法执行成功的,所以这里我改了一下
             resultSet = transactionStatement.executeQuery(
                     "select * from "
                             +Constants.NameTableRegister
@@ -170,7 +169,6 @@ public class DBConnector {
             }
 
             //插入数据
-            System.out.println("我还没有尝试插入呢！");
             transactionStatement.executeUpdate(
                     String.format("insert into %s values(\"%06d\",\"%s\",\"%s\",\"%s\",%d,false,%.2f,current_timestamp)",
                             Constants.NameTableRegister,
@@ -192,14 +190,22 @@ public class DBConnector {
                                 patientId)
                 );
             }
+            if(!deductFromBanlance){
+                transactionStatement.executeUpdate(
+                        String.format("update %s set %s=%.2f where %s=%s",
+                                Constants.NameTablePatient,
+                                Constants.NameTableColumnPatientBalance,
+                                (balance += addToBanlance),
+                                Constants.NameTableColumnPatientNumber,
+                                patientId)
+                );
+            }
 
             //没有问题出现的话
             transactionConnection.commit();
-            System.out.println("我dbconnect提交了吗？");
             return regId;
 
         } catch (SQLException e) {
-            System.out.println("我在dbconnect报错了吗？");
             try {
                 transactionConnection.rollback();
             }catch (SQLException ee){

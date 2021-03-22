@@ -72,7 +72,7 @@ class ListItemDoctor extends ListItem{
         departmentNumber = resultSet.getString(Constants.NameTableColumnDoctorDepartmentNumber);
         password = resultSet.getString(Constants.NameTableColumnDoctorPassword);
         isSpecialList = resultSet.getBoolean(Constants.NameTableColumnDoctorIsSpecialist);
-        lastLoginTime = resultSet.getTimestamp(Constants.NameTableColumnDoctorIsSpecialist);
+        lastLoginTime = resultSet.getTimestamp(Constants.NameTableColumnDoctorLastLogin);
         pronunciation = resultSet.getString(Constants.NameTableColumnDoctorPronounce);
     }
 }
@@ -374,14 +374,14 @@ public class PatientController {
     }
 
     private void updateRegisterButton() {
-        buttonRegister.setVisible(false);
+        buttonRegister.setDisable(true);
         int index;
         //满足输入条件才可以挂号
-        if(inputNameDoctor.getSelectionModel().getSelectedIndex() != -1||
-            (index = inputNameRegister.getSelectionModel().getSelectedIndex()) != -1 ||
-                    (checkBoxUseBalance.isSelected() && patientBalance >= listRegistersFilter.get(index).fee)||
-                    (!checkBoxUseBalance.isSelected() && sliderPay.getValue() >= listRegistersFilter.get(index).fee)){
-            buttonRegister.setVisible(true);
+        if(inputNameDoctor.getSelectionModel().getSelectedIndex() != -1&&
+            (index = inputNameRegister.getSelectionModel().getSelectedIndex()) != -1 &&
+                    ((checkBoxUseBalance.isSelected() && patientBalance >= listRegistersFilter.get(index).fee)||
+                    (!checkBoxUseBalance.isSelected() && sliderPay.getValue() >= listRegistersFilter.get(index).fee))){
+            buttonRegister.setDisable(false);
         }
     }
 
@@ -411,7 +411,7 @@ public class PatientController {
         list1 = FXCollections.observableArrayList();
         if ((index= inputNameDoctor.getSelectionModel().getSelectedIndex()) != -1) {
             for (ListItemNameRegister listItemNameRegister : list0)
-                if (!listItemNameRegister.isSpecial || listDoctorsFilter.get(index).isSpecialList)
+                if (listItemNameRegister.department.equals(listDoctorsFilter.get(index).departmentNumber))
                     list1.add(listItemNameRegister);
             list0 = list1;
         }
@@ -568,7 +568,7 @@ public class PatientController {
             if (!isCurrentInputLegal)
                 inputNameDoctor.getEditor().clear();
             if (newSelection != -1) {
-                inputNameDoctor.getSelectionModel().clearAndSelect(counter);
+                inputNameDoctor.getSelectionModel().clearAndSelect(newSelection);
                 inputNameDoctor.getEditor().setText(inputNameDoctor.getItems().get(newSelection));
             }
         }
@@ -637,7 +637,7 @@ public class PatientController {
     private void initComboBoxData() throws Exception {
         updateOneSetOfData(Constants.NameTableDepartment, listDepartments,ListItemDepartment.class);
         updateOneSetOfData(Constants.NameTableDoctor,listDoctors,ListItemDoctor.class);
-        updateOneSetOfData(Constants.NameTableRegister,listRegisters,ListItemNameRegister.class);
+        updateOneSetOfData(Constants.NameTableCategoryRegister,listRegisters,ListItemNameRegister.class);
 
         //关于listIsSpecials，因为只有两个对象，就手动添加了
         ListItemisSpecial special = new ListItemisSpecial();
@@ -814,7 +814,7 @@ class RegisterService extends Service {
             @Override
             protected Object call() throws Exception {
                 boolean retryFlag = false;
-                while (!retryFlag && retry-- > 0){
+                do{
                     try {
                         registerNumber = DBConnector.getInstance().tryRegister(
                                 registerCategoryNumber,
@@ -837,7 +837,7 @@ class RegisterService extends Service {
                                 return  null;
                         }
                     }
-                }
+                }while (retryFlag && retry-- > 0);
                 if(retry == 0){
                     returnCode = RegisterException.ErrorCode.retryTimeExceeded;
                 }else {
