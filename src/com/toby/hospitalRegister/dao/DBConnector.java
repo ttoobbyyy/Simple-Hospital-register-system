@@ -163,7 +163,6 @@ public class DBConnector {
                 throw new RegisterException("registerCategoryNotFound", RegisterException.ErrorCode.registerCategoryNotFound);
             }else
                 maxRegNumber = resultSet.getInt(Constants.NameTableColumnCategoryRegisterMaxRegisterNumber);
-            System.out.println("看看现在注册人数"+currentCount+"  看看最大注册数量"+maxRegNumber);
             if(currentCount >= maxRegNumber){
                 throw new RegisterException("max register number reached", RegisterException.ErrorCode.registerIdExceeded);
             }
@@ -215,32 +214,37 @@ public class DBConnector {
         }
     }
 
-    //这个有什么用啊
+    // 选择一定时间段的挂号人数！
     public ResultSet getRegisterFromDoctor(String docId, String startTime, String endTime){
         try {
-            String sql = "select reg."+Constants.NameTableColumnRegisterNumber
-                    +",pat."+Constants.NameTableColumnPatientName
-                    +",reg."+Constants.NameTableColumnRegisterDateTime
-                    +",cat."+Constants.NameTableColumnCategoryRegisterIsSpecialist
-                    +" from ( select "+Constants.NameTableColumnRegisterNumber
-                    +", "+Constants.NameTableColumnRegisterPatientNumber
-                    +", "+Constants.NameTableColumnRegisterDateTime
-                    +", "+Constants.NameTableColumnRegisterCategoryNumber
-                    +" from "+Constants.NameTableRegister
-                    +" where "+Constants.NameTableColumnRegisterDoctorNumber
-                    +"="+docId+" and "+Constants.NameTableColumnRegisterDateTime
-                    +" >= "+startTime+" and "+Constants.NameTableColumnRegisterDateTime
-                    +" <= "+endTime+" ) as reg"
-                    +" inner join ( select "+Constants.NameTableColumnPatientNumber
-                    +", "+Constants.NameTableColumnPatientName
-                    +" from "+Constants.NameTablePatient
-                    +") as pat on reg."+Constants.NameTableColumnRegisterPatientNumber
-                    +"=pat."+Constants.NameTableColumnPatientNumber
-                    +" inner join ( select "+Constants.NameTableColumnCategoryRegisterNumber
-                    +", "+Constants.NameTableColumnCategoryRegisterIsSpecialist
-                    +" from "+Constants.NameTableCategoryRegister
-                    +") as cat on reg."+Constants.NameTableColumnRegisterCategoryNumber
-                    +"=cat."+Constants.NameTableColumnCategoryRegisterNumber;
+            String sql = "select reg." + Constants.NameTableColumnRegisterNumber +
+                    ",pat." + Constants.NameTableColumnPatientName +
+                    ",reg." + Constants.NameTableColumnRegisterDateTime +
+                    ",cat." + Constants.NameTableColumnCategoryRegisterIsSpecialist + (
+                    " from (select " + Constants.NameTableColumnRegisterNumber +
+                            "," + Constants.NameTableColumnRegisterPatientNumber +
+                            "," + Constants.NameTableColumnRegisterDateTime +
+                            "," + Constants.NameTableColumnRegisterCategoryNumber +
+                            " from " + Constants.NameTableRegister +
+                            " where " + Constants.NameTableColumnRegisterDoctorNumber +
+                            "=" + docId +
+                            " and " + Constants.NameTableColumnRegisterDateTime +
+                            ">=\"" + startTime +
+                            "\" and " + Constants.NameTableColumnRegisterDateTime +
+                            "<=\"" + endTime +
+                            "\") as reg" ) + (
+                    " inner join (select " + Constants.NameTableColumnPatientNumber +
+                            "," + Constants.NameTableColumnPatientName +
+                            " from " + Constants.NameTablePatient +
+                            ") as pat" ) +
+                    " on reg." + Constants.NameTableColumnRegisterPatientNumber +
+                    "=pat." + Constants.NameTableColumnPatientNumber + (
+                    " inner join (select " + Constants.NameTableColumnCategoryRegisterNumber +
+                            "," + Constants.NameTableColumnCategoryRegisterIsSpecialist +
+                            " from " + Constants.NameTableCategoryRegister +
+                            ") as cat" ) +
+                    " on reg." + Constants.NameTableColumnRegisterCategoryNumber +
+                    "=cat." + Constants.NameTableColumnCategoryRegisterNumber;
             return statement.executeQuery(sql);
         }catch (SQLException e){
             e.printStackTrace();
@@ -248,7 +252,7 @@ public class DBConnector {
         }
     }
 
-    //高端操作！
+    //统计医生的收入
     public ResultSet getIncomeInfo(String startTime, String endTime){
         try {
             String sql = "select dep." + Constants.NameTableColumnDepartmentName +
@@ -260,10 +264,10 @@ public class DBConnector {
                     ") as sum from" + (
                     " (select * from " + Constants.NameTableRegister +
                             " where " + Constants.NameTableColumnRegisterDateTime +
-                            ">=" + startTime +
-                            " and " + Constants.NameTableColumnRegisterDateTime +
-                            "<=" + endTime +
-                            ") as reg") +
+                            ">=\"" + startTime +
+                            "\" and " + Constants.NameTableColumnRegisterDateTime +
+                            "<=\"" + endTime +
+                            "\") as reg") +
                     " inner join" + (
                     " (select " + Constants.NameTableColumnDoctorNumber +
                             "," + Constants.NameTableColumnDoctorName +
