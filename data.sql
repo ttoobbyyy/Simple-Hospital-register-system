@@ -8,6 +8,7 @@
     提示：直接登录cmd，用【source+文件路径】读取整个文件总是无法插入数据，可以借助其他IDE一次性读取，或者分表建立也行
 */
 
+use hospitalManage;
 --  department table
 drop table if exists department;
 

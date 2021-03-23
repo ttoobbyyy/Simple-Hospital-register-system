@@ -14,6 +14,13 @@
 4. 集成开发环境：IntelliJ IDEA 2020.3.2
 5. 开发操作系统：Windows 10 Pro x64 Version2004
 
+#### 2.2 测试环境
+
+1. 数据库：8.0.22-0ubuntu0.20.04.3 (Ubuntu)
+2. JDK：openjdk version "11.0.9.1"
+3. javafx：javafx-sdk-11.0.2
+4. 操作系统：Ubuntu 20.04.1 LTS
+
 ### 3. 配置问题
 3.1 数据库：由于是硬性编码，因此使用的数据库名和用户名和MySQL使用的	端口都是固定的。
 
@@ -28,6 +35,10 @@
 --module-path D:\computer\java\javafx-sdk-11.0.2\lib //这是lib的位置，lib的问题需要自行解决
 --add-modules javafx.controls,javafx.fxml,com.jfoenix
 ```
+
+3.3 依赖版本
+
+![image-20210323151628460](readme.assets/image-20210323151628460.png)
 
 ### 4. 系统设计
 
@@ -123,6 +134,8 @@
 * 采用了移动端的控件风格构造了一个更为人性化的操作界面
 * 程序考虑到了多种异常以及并发的安全问题，健壮性强，并且程序效率较高
 * 将程序分解为多个模块，耦合度低、可扩展性强，易于修改
+* 多平台基本可以运行，但是需要比较繁琐的环境配置，下面是Ubuntu的运行效果图，可以看出，除了字体有些微的差别外其余并无不同。
+![2021-03-23 15-09-33屏幕截图](readme.assets/2021-03-23%2015-09-33%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
 
 #### 6.2 不足和改进的建议
 
@@ -130,3 +143,36 @@
 * 可以添加更多的统计功能供不同角度的查询使用
 * 可将 sql 用户名密码等全局变量提取到配置文件中，避免硬编码
 * 程序配置javafx环境繁琐，可以考虑尝试将所有的依赖打入一个jar包中
+
+
+
+### 7 测试过程中遇到的问题
+
+#### 7.1 新建用户时数据库密码过短
+
+```mysql
+your password does not satisfy the current policy requirements 
+
+解决方法
+set global validate_password.policy=0;
+set global validate_password.length=4;
+之后重启即可
+```
+
+#### 7.2 无法插入 0000-00-00 00:00:00
+
+```mysql
+解决方法:执行下面语句就行
+SET GLOBAL sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+之后重启重新插入即可
+```
+
+#### 7.3 相关依赖的版本问题
+
+​		使用jfoenix包的版本最好和本项目一致，相关版本见上面的配置问题
+
+### 8. 总结
+
+​		虽然是一个非常非常大众的信息管理系统，但是也是我第一个独立完成的项目，期间也遇到了各种各样的问题。有些问题解决了，有些屈服于时间，没办法在这个“没有技术含量”的项目中花更多的时间。不管如何就这样吧，以后可能会考虑将项目完善一下。
+
+​		

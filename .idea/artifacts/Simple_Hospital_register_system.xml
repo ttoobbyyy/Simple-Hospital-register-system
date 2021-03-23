@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Simple-Hospital-register-system">
+    <output-path>$PROJECT_DIR$/out/artifacts/Simple_Hospital_register_system</output-path>
+    <root id="root">
+      <element id="archive" name="Simple_Hospital_register_system.jar">
+        <element id="module-output" name="Simple-Hospital-register-system" />
+      </element>
+    </root>
+  </artifact>
+</component>
