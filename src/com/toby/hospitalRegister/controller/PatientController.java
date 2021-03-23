@@ -411,7 +411,8 @@ public class PatientController {
         list1 = FXCollections.observableArrayList();
         if ((index= inputNameDoctor.getSelectionModel().getSelectedIndex()) != -1) {
             for (ListItemNameRegister listItemNameRegister : list0)
-                if (listItemNameRegister.department.equals(listDoctorsFilter.get(index).departmentNumber))
+                if (listItemNameRegister.department.equals(listDoctorsFilter.get(index).departmentNumber)
+                    && listItemNameRegister.isSpecial == listDoctorsFilter.get(index).isSpecialList)
                     list1.add(listItemNameRegister);
             list0 = list1;
         }
